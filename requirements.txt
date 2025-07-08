@@ -20,3 +20,4 @@ pymysql
 # Typing and Dev Tools
 typing-extensions
 ipython
+duckduckgo_search
