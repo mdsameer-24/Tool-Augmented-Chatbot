@@ -66,78 +66,78 @@ def add(a:int,b:int) -> int:
 
 
 
-db_user = "root"
-db_password = "12345"
-db_host = "localhost"
-db_name = "retail_sales_db"
+# db_user = "root"
+# db_password = "12345"
+# db_host = "localhost"
+# db_name = "retail_sales_db" streamlit
 
 # Create SQLAlchemy engine
 from langchain_community.utilities import SQLDatabase
 
-engine = create_engine(f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}")
+# engine = create_engine(f"mysql+pymysql://{db_user}:{db_password}@{db_host}/{db_name}") streamlit
 
-db = SQLDatabase(engine, sample_rows_in_table_info=3)
+# db = SQLDatabase(engine, sample_rows_in_table_info=3)
 
-chain = create_sql_query_chain(llm, db)
+# chain = create_sql_query_chain(llm, db)
 
 
-def execute_query(question :str)->str:
-    try:
-        # Generate SQL query from question
-        response = chain.invoke({"question": question})
-        cleaned_query = response.strip('```sql\n').strip('\n```')
-        result = db.run(cleaned_query)
+# def execute_query(question :str)->str:
+#     try:
+#         # Generate SQL query from question
+#         response = chain.invoke({"question": question})
+#         cleaned_query = response.strip('```sql\n').strip('\n```')
+#         result = db.run(cleaned_query)
        
                 
-        # Return the query and the result
-        return result
-    except ProgrammingError as e:
-        # st.error(f"An error occurred: {e}")
-        return None
+#         # Return the query and the result
+#         return result
+#     except ProgrammingError as e:
+#         # st.error(f"An error occurred: {e}")
+#         return None
     
-execute_query_tool = Tool(
-    name="execute_query",
-    func=execute_query,
-    description= "Use this tool to answer natural language questions related to customer transactions, product categories, and sales data "
-        "stored in the 'sales_tb' table of the 'retail_sales_db' MySQL database.\n\n"
+# execute_query_tool = Tool(
+#     name="execute_query",
+#     func=execute_query,
+#     description= "Use this tool to answer natural language questions related to customer transactions, product categories, and sales data "
+#         "stored in the 'sales_tb' table of the 'retail_sales_db' MySQL database.\n\n"
         
-        "The table contains the following columns:\n"
-        "- TransactionID\n"
-        "- Date\n"
-        "- CustomerID\n"
-        "- Gender\n"
-        "- Age\n"
-        "- ProductCategory\n"
-        "- Quantity\n"
-        "- PriceperUnit\n"
-        "- TotalAmount\n\n"
+#         "The table contains the following columns:\n"
+#         "- TransactionID\n"
+#         "- Date\n"
+#         "- CustomerID\n"
+#         "- Gender\n"
+#         "- Age\n"
+#         "- ProductCategory\n"
+#         "- Quantity\n"
+#         "- PriceperUnit\n"
+#         "- TotalAmount\n\n"
         
-        "This tool converts natural language to SQL and returns the executed result.\n\n"
+#         "This tool converts natural language to SQL and returns the executed result.\n\n"
 
-        "Example questions with corresponding queries and expected answers:\n"
-        "1. Question: 'How many customers are there?'\n"
-        "   SQL: SELECT COUNT(DISTINCT CustomerID) AS NumberOfCustomers FROM sales_tb;\n"
-        "   Answer: 29\n\n"
+#         "Example questions with corresponding queries and expected answers:\n"
+#         "1. Question: 'How many customers are there?'\n"
+#         "   SQL: SELECT COUNT(DISTINCT CustomerID) AS NumberOfCustomers FROM sales_tb;\n"
+#         "   Answer: 29\n\n"
 
-        "2. Question: 'How many unique customers are there for each product category?'\n"
-        "   SQL: SELECT ProductCategory, COUNT(DISTINCT CustomerID) AS UniqueCustomers FROM sales_tb GROUP BY ProductCategory;\n"
-        "   Answer: [('Beauty', 8), ('Clothing', 13), ('Electronics', 8)]\n\n"
+#         "2. Question: 'How many unique customers are there for each product category?'\n"
+#         "   SQL: SELECT ProductCategory, COUNT(DISTINCT CustomerID) AS UniqueCustomers FROM sales_tb GROUP BY ProductCategory;\n"
+#         "   Answer: [('Beauty', 8), ('Clothing', 13), ('Electronics', 8)]\n\n"
 
-        "3. Question: 'Calculate total sales amount per product category:'\n"
-        "   SQL: SELECT ProductCategory, SUM(TotalAmount) AS TotalSalesAmount FROM sales_tb GROUP BY ProductCategory ORDER BY TotalSalesAmount DESC;\n"
-        "   Answer: [('Clothing', 7940.0), ('Electronics', 5360.0), ('Beauty', 1760.0)]\n\n"
+#         "3. Question: 'Calculate total sales amount per product category:'\n"
+#         "   SQL: SELECT ProductCategory, SUM(TotalAmount) AS TotalSalesAmount FROM sales_tb GROUP BY ProductCategory ORDER BY TotalSalesAmount DESC;\n"
+#         "   Answer: [('Clothing', 7940.0), ('Electronics', 5360.0), ('Beauty', 1760.0)]\n\n"
 
-        "4. Question: 'Which gender spent the most overall?'\n"
-        "   SQL: SELECT Gender, SUM(TotalAmount) AS TotalSpent FROM sales_tb GROUP BY Gender ORDER BY TotalSpent DESC;\n"
-        "   Answer: [('Male', 7925.0), ('Female', 5135.0)]\n\n"
+#         "4. Question: 'Which gender spent the most overall?'\n"
+#         "   SQL: SELECT Gender, SUM(TotalAmount) AS TotalSpent FROM sales_tb GROUP BY Gender ORDER BY TotalSpent DESC;\n"
+#         "   Answer: [('Male', 7925.0), ('Female', 5135.0)]\n\n"
 
-        "5. Question: 'Show total sales per month:'\n"
-        "   SQL: SELECT MONTH(Date) AS Month, SUM(TotalAmount) AS MonthlySales FROM sales_tb GROUP BY MONTH(Date) ORDER BY Month;\n"
-        "   Answer: [(1, 1680.0), (2, 2700.0), (3, 50.0), (4, 1280.0), (5, 600.0), (6, 0), (7, 0), (8, 1580.0), (9, 50.0), (10, 2500.0), (11, 1350.0), (12, 300.0)]"
-)
+#         "5. Question: 'Show total sales per month:'\n"
+#         "   SQL: SELECT MONTH(Date) AS Month, SUM(TotalAmount) AS MonthlySales FROM sales_tb GROUP BY MONTH(Date) ORDER BY Month;\n"
+#         "   Answer: [(1, 1680.0), (2, 2700.0), (3, 50.0), (4, 1280.0), (5, 600.0), (6, 0), (7, 0), (8, 1580.0), (9, 50.0), (10, 2500.0), (11, 1350.0), (12, 300.0)]"
+# )
 
-
-tools=[search_tool, add, multiply,execute_query_tool]
+# execute_query_tool
+tools=[search_tool, add, multiply]
 llm_with_tools=llm.bind_tools(tools)
 def chatbot(state: State):
     return {"messages": [llm_with_tools.invoke(state["messages"])]}
